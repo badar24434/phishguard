@@ -8,7 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Phishing Detection Dashboard',
+  title: 'PhishGuard - Phishing Detection Dashboard',
   description: 'Protect yourself from phishing attempts',
 };
 
@@ -26,12 +26,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex h-screen">
-            <Sidebar />
-            <main className="flex-1 overflow-y-auto bg-background">
-              {children}
-            </main>
-          </div>
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>

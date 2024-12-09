@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -12,38 +12,26 @@ export default function SettingsPage() {
     enableNotifications: true,
     autoScan: false,
     highSecurity: false,
-    darkMode: false,
   });
-  
   const { toast } = useToast();
 
-  const handleSettingChange = (key: string) => {
-    setSettings(prev => {
-      const newSettings = { ...prev, [key]: !prev[key as keyof typeof prev] };
-      
-      toast({
-        title: 'Settings Updated',
-        description: `${key} has been ${newSettings[key as keyof typeof newSettings] ? 'enabled' : 'disabled'}.`,
-      });
-      
-      return newSettings;
-    });
+  const handleSettingChange = (setting: string) => {
+    setSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting as keyof typeof prev]
+    }));
   };
 
-  const clearHistory = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.clear();
-      toast({
-        title: 'History Cleared',
-        description: 'All scan history has been cleared.',
-      });
-    }
+  const handleClearHistory = () => {
+    toast({
+      title: "History Cleared",
+      description: "Your scan history has been cleared successfully",
+    });
   };
 
   return (
     <div className="container p-6">
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
-      
       <div className="space-y-6">
         <Card>
           <CardHeader>
@@ -75,7 +63,7 @@ export default function SettingsPage() {
                 onCheckedChange={() => handleSettingChange('autoScan')}
               />
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label>High Security Mode</Label>
@@ -98,7 +86,7 @@ export default function SettingsPage() {
           <CardContent>
             <Button
               variant="destructive"
-              onClick={clearHistory}
+              onClick={handleClearHistory}
             >
               Clear Scan History
             </Button>

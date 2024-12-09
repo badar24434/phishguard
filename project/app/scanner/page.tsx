@@ -1,3 +1,5 @@
+'use client';
+
 import { WebsiteScanner } from '@/components/website-scanner';
 
 export default function ScannerPage() {

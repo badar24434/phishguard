@@ -1,27 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { WebsiteScanner } from '@/components/website-scanner';
-import { PhishingStats } from '@/components/phishing-stats';
-import { PhishingChart } from '@/components/phishing-chart';
+import { NavHeader } from '@/components/landing/nav-header';
+import { HeroSection } from '@/components/landing/hero-section';
+import { FeaturesSection } from '@/components/landing/features-section';
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="container p-6 space-y-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-      
-      <WebsiteScanner />
-      
-      <div className="grid gap-4 md:grid-cols-3">
-        <PhishingStats />
-      </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Phishing Attempts Over Time</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <PhishingChart />
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-background">
+      <NavHeader />
+      <main className="container mx-auto px-6 py-12">
+        <HeroSection />
+        <FeaturesSection />
+      </main>
     </div>
   );
 }
