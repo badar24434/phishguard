@@ -6,7 +6,9 @@ import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation'; 
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Shield } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle } from 'lucide-react';
+import { scanUrl } from '@/lib/phishing-detection';
+import { saveScanResult } from '@/lib/storage';
 
 export function WebsiteScanner() {
   const router = useRouter();
@@ -28,15 +30,22 @@ export function WebsiteScanner() {
 
   const handleScan = async () => {
     if (url.trim() === '') return;
+    
     setScanning(true);
-    localStorage.setItem('url', url);  // Store URL in localStorage for persistence
+    localStorage.setItem('url', url);
+
     try {
-      // Replace with your actual scan logic
-      const response = await fetch(`/api/scan?url=${url}`);
-      const data = await response.json();
-      setResult(data);
+      // Use the scanUrl function directly instead of making an API call
+      const scanResult = await scanUrl(url);
+      setResult(scanResult);
+      saveScanResult(scanResult); // Save to scan history
     } catch (error) {
       console.error("Error scanning URL:", error);
+      setResult({
+        isPhishing: true,
+        confidence: 1,
+        error: "Invalid URL or scanning error"
+      });
     } finally {
       setScanning(false);
     }
@@ -66,11 +75,29 @@ export function WebsiteScanner() {
 
             {result && (
               <div className="w-full max-w-xl mt-4">
-                <div className={`flex items-center gap-2 p-4 rounded-lg ${result.isPhishing ? 'bg-destructive/10' : 'bg-green-500/10'}`}>
-                  <div>{result.isPhishing ? 'Warning: Phishing' : 'Safe'}</div>
+                <div className={`flex items-center gap-4 p-4 rounded-lg ${
+                  result.isPhishing ? 'bg-destructive/10' : 'bg-green-500/10'
+                }`}>
+                  {result.isPhishing ? (
+                    <AlertTriangle className="h-5 w-5 text-destructive" />
+                  ) : (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  )}
+                  <div className="flex-1">
+                    <div className="font-medium">
+                      {result.isPhishing ? 'Warning: Potential Phishing Site' : 'Safe Website'}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Confidence: {Math.round(result.confidence * 100)}%
+                    </div>
+                    {result.error && (
+                      <div className="text-sm text-destructive">{result.error}</div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
+
           </div>
         </CardContent>
       </Card>
