@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import { ChevronLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function SettingsPage() {
@@ -14,6 +16,7 @@ export default function SettingsPage() {
     highSecurity: false,
   });
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleSettingChange = (setting: string) => {
     setSettings(prev => ({
@@ -29,8 +32,21 @@ export default function SettingsPage() {
     });
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <div className="container p-6">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleBack}
+        className="mb-6 text-muted-foreground"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </Button>
+
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
       <div className="space-y-6">
         <Card>

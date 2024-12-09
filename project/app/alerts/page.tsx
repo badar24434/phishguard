@@ -3,17 +3,34 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getScanHistory } from '@/lib/storage';
-import { AlertTriangle, CheckCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, ChevronLeft } from 'lucide-react'; // Import the left arrow icon
+import { useRouter } from 'next/navigation'; // Import useRouter
+import { Button } from '@/components/ui/button'; // Import the Button component
 
 export default function AlertsPage() {
   const [history, setHistory] = useState<any[]>([]);
+  const router = useRouter(); // Use router to handle the back action
 
   useEffect(() => {
     setHistory(getScanHistory());
   }, []);
 
+  const handleBack = () => {
+    router.back(); // Goes back to the previous page in the browser's history
+  };
+
   return (
     <div className="container p-6">
+      {/* Back Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleBack}
+        className="mb-6 text-muted-foreground"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </Button>
+
       <h1 className="text-3xl font-bold mb-6">Scan History & Alerts</h1>
       
       <div className="space-y-4">
