@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation'; 
+import { useRouter, usePathname } from 'next/navigation'; // Import usePathname
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Shield, AlertTriangle, CheckCircle } from 'lucide-react';
@@ -12,6 +12,7 @@ import { saveScanResult } from '@/lib/storage';
 
 export function WebsiteScanner() {
   const router = useRouter();
+  const pathname = usePathname(); // Get the current pathname
   const [url, setUrl] = useState('');
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -51,11 +52,16 @@ export function WebsiteScanner() {
     }
   };
 
+  // Conditionally render back button if we're not on the dashboard
+  const isNotDashboard = pathname !== '/dashboard'; // Use pathname here
+
   return (
     <div>
-      <Button variant="ghost" size="icon" onClick={handleBack} className="mb-4">
-        <ChevronLeft className="h-6 w-6" />
-      </Button>
+      {isNotDashboard && (
+        <Button variant="ghost" size="icon" onClick={handleBack} className="mb-4">
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+      )}
       
       <Card className="bg-card">
         <CardContent className="pt-6">
