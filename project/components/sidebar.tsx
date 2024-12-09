@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Shield, BarChart3, Settings, AlertCircle, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Shield, BarChart3, Settings, AlertCircle, Sun, Moon, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { useToast } from '@/components/ui/use-toast';
 
 const sidebarItems = [
   {
@@ -35,6 +36,17 @@ export function Sidebar() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    toast({
+      title: "Logged Out",
+      description: "You have successfully logged out.",
+    });
+    router.push('/');
+  };
 
   return (
     <div className={cn(
@@ -55,36 +67,50 @@ export function Sidebar() {
         {!collapsed && <span className="ml-2 font-semibold">PhishGuard</span>}
       </div>
 
-      <div className="flex-1 space-y-1 py-4">
-        {sidebarItems.map((item) => (
-          <Link key={item.href} href={item.href}>
-            <Button
-              variant={pathname === item.href ? 'secondary' : 'ghost'}
-              className={cn(
-                'w-full justify-start',
-                collapsed ? 'px-2' : 'px-4'
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {!collapsed && <span className="ml-2">{item.title}</span>}
-            </Button>
-          </Link>
-        ))}
-      </div>
+      <div className="flex flex-col h-[calc(100%-3.5rem)]">
+        <div className="flex-1 py-4 space-y-1">
+          {sidebarItems.map((item) => (
+            <Link key={item.href} href={item.href}>
+              <Button
+                variant={pathname === item.href ? 'secondary' : 'ghost'}
+                className={cn(
+                  'w-full justify-start',
+                  collapsed ? 'px-2' : 'px-4'
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {!collapsed && <span className="ml-2">{item.title}</span>}
+              </Button>
+            </Link>
+          ))}
+        </div>
 
-      <div className="absolute bottom-4 left-0 right-0 px-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="w-full"
-        >
-          {theme === 'dark' ? (
-            <Sun className="h-4 w-4" />
-          ) : (
-            <Moon className="h-4 w-4" />
-          )}
-        </Button>
+        <div className="p-4 space-y-2">
+          <Button
+            variant="ghost"
+            className={cn(
+              'w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-500/10',
+              collapsed ? 'px-2' : 'px-4'
+            )}
+            onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
+            {!collapsed && <span className="ml-2">Logout</span>}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="w-full"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );
