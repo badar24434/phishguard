@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>PhishGuard</title>
+  <link rel="stylesheet" href="./popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo-container">
+        <img src="../assets/logo.png" alt="PhishGuard Logo" class="logo">
+        <h1>PhishGuard</h1>
+      </div>
+      <div class="separator"></div>
+    </div>
+
+    <div class="main-content">
+      <button id="scanUrl" class="primary-button">
+        Analyze Website
+      </button>
+
+      <div id="loader" class="loader hidden">
+        <div class="spinner"></div>
+        <p>Analyzing website security...</p>
+      </div>
+
+      <div id="scanResult" class="result-container hidden">
+        <div class="status-header">
+          <div class="status-indicator"></div>
+          <h2 class="status-title"></h2>
+        </div>
+        
+        <div class="details-container">
+          <div class="detail-item">
+            <span class="detail-label">Country:</span>
+            <span id="countryValue" class="detail-value"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">First Seen:</span>
+            <span id="firstSeenValue" class="detail-value"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Host:</span>
+            <span id="hostValue" class="detail-value"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Risk Score:</span>
+            <span id="riskScoreValue" class="detail-value"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="actionButtons" class="action-buttons hidden">
+        <button id="reportUrl" class="warning-button">
+          Report Website
+        </button>
+        <button id="antivirusScan" class="danger-button">
+          Run Antivirus Scan
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Protected by Advanced AI Security</p>
+    </div>
+  </div>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

@@ -58,7 +58,10 @@ export default function AlertsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-sm text-muted-foreground">
-                Confidence: {Math.round(scan.confidence * 100)}%
+                Confidence: {Math.round(scan.isPhishing ? 
+                  scan.confidence * 100 : // For phishing sites
+                  (1 - scan.confidence) * 100 // For safe sites
+                )}%
               </div>
             </CardContent>
           </Card>

@@ -112,7 +112,10 @@ export function WebsiteScanner() {
                       {result.isPhishing ? 'Warning: Potential Phishing Site' : 'Safe Website'}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Confidence: {Math.round(result.confidence * 100)}%
+                      Confidence: {Math.round(result.isPhishing ? 
+                        result.confidence * 100 : // For phishing sites
+                        (1 - result.confidence) * 100 // For safe sites
+                      )}%
                     </div>
                     {result.error && (
                       <div className="text-sm text-destructive">{result.error}</div>

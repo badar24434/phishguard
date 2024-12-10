@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Site Blocked - PhishGuard</title>
+  <link rel="stylesheet" href="styles/popup.css">
+  <style>
+    body {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .blocked-container {
+      max-width: 600px;
+      padding: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="blocked-container">
+    <h1>⚠️ Site Blocked</h1>
+    <p>This website has been blocked by PhishGuard for your safety.</p>
+    <button class="primary-button" onclick="window.history.back()">Go Back</button>
+  </div>
+</body>
+</html>
