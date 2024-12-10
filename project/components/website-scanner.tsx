@@ -7,8 +7,8 @@ import { useRouter, usePathname } from 'next/navigation'; // Import usePathname
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Shield, AlertTriangle, CheckCircle } from 'lucide-react';
-import { scanUrl } from '@/lib/phishing-detection';
 import { saveScanResult } from '@/lib/storage';
+import { ScanResult } from '@/lib/phishing-detection';
 
 export function WebsiteScanner() {
   const router = useRouter();
@@ -31,21 +31,39 @@ export function WebsiteScanner() {
 
   const handleScan = async () => {
     if (url.trim() === '') return;
-    
+
     setScanning(true);
+    setResult(null); // Reset previous results
     localStorage.setItem('url', url);
 
     try {
-      // Use the scanUrl function directly instead of making an API call
-      const scanResult = await scanUrl(url);
+      const response = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+        cache: 'no-store', // Add this line to prevent caching
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const scanResult = await response.json();
+      
+      if (scanResult.error) {
+        throw new Error(scanResult.error);
+      }
+
       setResult(scanResult);
-      saveScanResult(scanResult); // Save to scan history
+      saveScanResult(scanResult);
     } catch (error) {
-      console.error("Error scanning URL:", error);
+      console.error('Error scanning URL:', error);
       setResult({
-        isPhishing: true,
-        confidence: 1,
-        error: "Invalid URL or scanning error"
+        url,
+        timestamp: new Date().toISOString(),
+        isPhishing: false,
+        confidence: 0,
+        error: error instanceof Error ? error.message : 'Failed to analyze the URL'
       });
     } finally {
       setScanning(false);
