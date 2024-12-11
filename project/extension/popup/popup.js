@@ -22,43 +22,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('loader').classList.add('hidden');
   };
 
+  // Update UI function
   const updateUI = (result) => {
-    const resultContainer = document.getElementById('scanResult');
-    const actionButtons = document.getElementById('actionButtons');
-    const statusTitle = document.querySelector('.status-title');
     const indicator = document.querySelector('.status-indicator');
-    
-    // Update status
+    const statusTitle = document.querySelector('.status-title');
+    const actionButtons = document.getElementById('actionButtons');
+
+    // Update status based on model prediction
     if (result.safe) {
       indicator.style.backgroundColor = 'var(--accent-color)';
       statusTitle.textContent = 'Website Appears Safe';
       actionButtons.classList.add('hidden');
     } else {
       indicator.style.backgroundColor = 'var(--danger-color)';
-      statusTitle.textContent = 'Potential Security Risk';
+      statusTitle.textContent = 'Potential Phishing Site';
       actionButtons.classList.remove('hidden');
     }
 
-    // Update details
+    // Update details with risk interpretation
     document.getElementById('countryValue').textContent = result.details.country;
     document.getElementById('firstSeenValue').textContent = formatDate(result.details.firstSeen);
     document.getElementById('hostValue').textContent = result.details.host;
-    document.getElementById('riskScoreValue').textContent = `${result.details.riskScore}/100`;
+    document.getElementById('riskScoreValue').textContent = `${result.details.riskScore}/100 ${
+      result.details.riskScore > 50 ? '(High Risk)' : '(Low Risk)'
+    }`;
 
-    resultContainer.classList.remove('hidden');
+    document.getElementById('scanResult').classList.remove('hidden');
   };
 
   // Scan URL Button
   document.getElementById('scanUrl').addEventListener('click', async () => {
     const tab = await getCurrentTab();
+    const url = tab.url;
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      updateUI({
+        safe: true,
+        details: {
+          country: 'N/A',
+          firstSeen: 'N/A',
+          host: 'Browser Page',
+          riskScore: 0
+        }
+      });
+      return;
+    }
+
     showLoader();
     try {
+      console.log('Starting scan for:', tab.url);
       const result = await scanUrl(tab.url);
       hideLoader();
       updateUI(result);
     } catch (error) {
+      console.error('Scan failed:', error);
       hideLoader();
-      showNotification('Error', 'Failed to scan website. Please try again.');
+      showNotification('Error', `Failed to scan website: ${error.message}`);
     }
   });
 

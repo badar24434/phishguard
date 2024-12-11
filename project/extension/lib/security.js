@@ -3,28 +3,54 @@ import { API_ENDPOINTS } from './constants.js';
 
 export const scanUrl = async (url) => {
   try {
-    // Show loading state
     const domain = new URL(url).hostname;
-    
-    // Parallel API calls for better performance
-    const [whoisData, ipQualityScore] = await Promise.all([
+    console.log('Scanning domain:', domain);
+
+    const [whoisData, modelResponse] = await Promise.all([
       getWhoisData(domain),
-      getIPQualityScore(url)
+      fetch(`${API_ENDPOINTS.MODEL_SCAN}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      }),
     ]);
 
-    const result = {
-      safe: ipQualityScore?.riskScore < 75,
+    // Debug logging for WHOIS data
+    console.log('Raw WHOIS Data:', whoisData.rawData);
+    console.log('Parsed WHOIS fields:', {
+      country: whoisData.country,
+      firstSeen: whoisData.firstSeen,
+      host: whoisData.host
+    });
+
+    const modelData = await modelResponse.json();
+    console.log('Model Data:', modelData);
+    console.log('WHOIS Data:', whoisData);
+
+    if (modelData.error) {
+      throw new Error(modelData.error);
+    }
+
+    const riskScore = Math.round(modelData.confidence * 100);
+    console.log('Raw confidence:', modelData.confidence);
+    console.log('Calculated risk score:', riskScore);
+
+    return {
+      safe: !modelData.isPhishing,
       details: {
-        ...whoisData,
-        riskScore: ipQualityScore?.riskScore || 0,
-        suspicious: ipQualityScore?.suspicious || false
+        country: whoisData.country,
+        firstSeen: whoisData.firstSeen,
+        host: whoisData.host,
+        riskScore: riskScore,
+        modelPrediction: modelData.isPhishing,
+        confidence: modelData.confidence
       }
     };
-
-    return result;
   } catch (error) {
-    console.error('Error scanning URL:', error);
-    throw new Error('Failed to scan URL');
+    console.error('Detailed error:', error);
+    throw error;
   }
 };
 
@@ -73,3 +99,43 @@ export const checkBlacklist = async (url) => {
     return false;
   }
 };
+
+// popup.js - Add debug logging
+const updateUI = (result) => {
+  console.log('UpdateUI received:', result); // Add this debug line
+  
+  const resultContainer = document.getElementById('scanResult');
+  const actionButtons = document.getElementById('actionButtons');
+  const statusTitle = document.querySelector('.status-title');
+  
+  if (result.safe) {
+    statusTitle.textContent = 'Website Appears Safe';
+  } else {
+    statusTitle.textContent = `Potential Phishing Site (${result.details.riskScore}% Confidence)`;
+  }
+  
+  // Log before updating risk score
+  console.log('Risk Score Value:', result.details.riskScore);
+  
+  document.getElementById('riskScoreValue').textContent = 
+    `${result.details.riskScore}/100`;
+};
+
+// Add click handler debug
+document.getElementById('scanUrl').addEventListener('click', async () => {
+  const tab = await getCurrentTab();
+  const url = tab.url;
+  
+  showLoader();
+  try {
+    console.log('Starting scan for:', url);
+    const result = await scanUrl(url);
+    console.log('Scan result:', result); // Add this debug line
+    hideLoader();
+    updateUI(result);
+  } catch (error) {
+    console.error('Scan failed:', error);
+    hideLoader();
+    showNotification('Error', `Failed to scan website: ${error.message}`);
+  }
+});
