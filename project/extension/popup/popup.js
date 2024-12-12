@@ -85,10 +85,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('reportUrl').addEventListener('click', async () => {
     const tab = await getCurrentTab();
     try {
-      await reportUrl(tab.url);
-      showNotification('Success', 'Website reported successfully. Thank you for helping keep the web safe!');
+      // Copy URL to clipboard
+      await navigator.clipboard.writeText(tab.url);
+      
+      // Show notification that URL was copied
+      showNotification('Success', 'URL copied to clipboard. Please paste it in the PhishTank report form.');
+      
+      // Open PhishTank in new tab
+      chrome.tabs.create({ url: 'https://www.phishtank.com/report_phish.php' });
+      
     } catch (error) {
-      showNotification('Error', 'Failed to report website. Please try again.');
+      showNotification('Error', 'Failed to copy URL. Please try again.');
     }
   });
 

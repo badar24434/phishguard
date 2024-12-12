@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import { saveScanResult } from '@/lib/storage';
 import { ScanResult } from '@/lib/phishing-detection';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'; // Import the GFM plugin
 
 export function WebsiteScanner() {
   const router = useRouter();
@@ -17,13 +19,15 @@ export function WebsiteScanner() {
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
-  const [summary, setSummary] = useState<string | null>(null);
+  const [summary, setSummary] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Store URL in localStorage on change
   useEffect(() => {
     const savedUrl = localStorage.getItem('url');
     if (savedUrl) {
       setUrl(savedUrl);
+      
     }
   }, []);
 
@@ -72,22 +76,42 @@ export function WebsiteScanner() {
     }
   };
 
-  const handleGenerateSummary = async () => {
-    if (!result || isGeneratingSummary) return;
-    
+  const generateSummary = async () => {
+    setLoading(true);
     setIsGeneratingSummary(true);
     try {
-      const response = await fetch('/api/summary', {
+      // Extract domain from URL
+      const domain = new URL(url).hostname;
+
+      const response = await fetch('http://localhost:8001/api/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          url: domain 
+        })
       });
-      
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Format and display the summary
       setSummary(data.summary);
+
     } catch (error) {
       console.error('Error generating summary:', error);
+      setSummary('Failed to generate summary. Please try again.');
     } finally {
+      setLoading(false);
       setIsGeneratingSummary(false);
     }
   };
@@ -156,9 +180,10 @@ export function WebsiteScanner() {
           <CardContent className="pt-6">
             <div className="flex flex-col items-center space-y-4">
               <h3 className="text-xl font-semibold">Website Analysis</h3>
+              
               <Button 
-                onClick={handleGenerateSummary}
-                disabled={isGeneratingSummary}
+                onClick={generateSummary}
+                disabled={loading || !url}
                 className="w-full max-w-xl bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all duration-200"
               >
                 {isGeneratingSummary ? (
@@ -167,15 +192,15 @@ export function WebsiteScanner() {
                     Generating Summary...
                   </>
                 ) : (
-                  'Generate Website Summary'
+                  'Generate Website Summary with AI'
                 )}
               </Button>
               
               {summary && (
                 <div className="w-full max-w-xl mt-4 p-4 bg-muted/50 rounded-lg">
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                    {summary}
-                  </p>
+                  <div className="custom-markdown">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
+                  </div>
                 </div>
               )}
             </div>
@@ -185,3 +210,4 @@ export function WebsiteScanner() {
     </div>
   );
 }
+

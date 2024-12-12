@@ -80,3 +80,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+.custom-markdown {
+  font-family: 'Your Desired Font', sans-serif;
+  /* Add other custom styles as needed */
+}
+
+.custom-markdown h1,
+.custom-markdown h2,
+.custom-markdown h3,
+.custom-markdown h4,
+.custom-markdown h5,
+.custom-markdown h6 {
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.custom-markdown p {
+  margin-bottom: 1rem;
+}
+
+.custom-markdown ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.custom-markdown li {
+  margin-bottom: 0.5rem;
+}
+
+.custom-markdown strong,
+.custom-markdown b {
+  font-weight: bold;
+}
