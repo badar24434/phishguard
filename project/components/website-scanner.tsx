@@ -192,7 +192,7 @@ export function WebsiteScanner() {
                     Generating Summary...
                   </>
                 ) : (
-                  'Generate Website Summary with AI'
+                  'Generate Website Analysis with AI'
                 )}
               </Button>
               

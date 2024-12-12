@@ -115,3 +115,9 @@
 .custom-markdown b {
   font-weight: bold;
 }
+
+.custom-markdown em {
+  color: var(--muted-foreground);
+  font-style: italic;
+  font-size: 0.875rem;
+}
