@@ -1,17 +1,49 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { LineChart } from '@/components/charts/line-chart';
-
-const data = [
-  { date: '2024-01-01', attempts: 4 },
-  { date: '2024-01-02', attempts: 7 },
-  { date: '2024-01-03', attempts: 5 },
-  { date: '2024-01-04', attempts: 8 },
-  { date: '2024-01-05', attempts: 12 },
-  { date: '2024-01-06', attempts: 9 },
-  { date: '2024-01-07', attempts: 6 },
-];
+import { getChartData } from '@/lib/storage';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function PhishingChart() {
-  return <LineChart data={data} xAxisKey="date" yAxisKey="attempts" />;
+  const [data, setData] = useState(getChartData());
+
+  useEffect(() => {
+    // Initial load
+    setData(getChartData());
+
+    // Listen for storage updates from extension
+    const handleStorageUpdate = () => {
+      setData(getChartData());
+    };
+
+    window.addEventListener('phishguardStorageUpdate', handleStorageUpdate);
+
+    // Refresh every 5 seconds to match stats refresh
+    const interval = setInterval(() => {
+      setData(getChartData());
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('phishguardStorageUpdate', handleStorageUpdate);
+    };
+  }, []);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Phishing Attempts (Last 7 Days)</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="h-[200px]">
+          <LineChart 
+            data={data} 
+            xAxisKey="date" 
+            yAxisKey="attempts"
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

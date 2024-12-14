@@ -80,7 +80,6 @@ export function WebsiteScanner() {
     setLoading(true);
     setIsGeneratingSummary(true);
     try {
-      // Extract domain from URL
       const domain = new URL(url).hostname;
 
       const response = await fetch('http://localhost:8001/api/analyze', {
@@ -89,7 +88,8 @@ export function WebsiteScanner() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
-          url: domain 
+          url: domain,
+          scan_result: result  // Add scan result to the payload
         })
       });
 

@@ -108,6 +108,10 @@ async def analyze_url(request: URLRequest):
         api_data = await analyzer.fetch_api_data(domain)
         predictor = PredictURL()
         prediction = predictor.predict(request.url)
+        
+        # Add prediction results to api_data
+        api_data['model_result'] = prediction
+        
         summary = await analyzer.generate_summary(api_data)
         
         return {
@@ -120,3 +124,4 @@ async def analyze_url(request: URLRequest):
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+

@@ -16,6 +16,20 @@ class WebsiteAnalyzer:
     async def fetch_api_data(self, domain):
         async with aiohttp.ClientSession() as session:
             try:
+                # Add WHOIS API call
+                whois_url = "https://www.whoisxmlapi.com/whoisserver/WhoisService"
+                whois_params = {
+                    "apiKey": self.whois_api_key,
+                    "domainName": domain,
+                    "outputFormat": "JSON"
+                }
+                async with session.get(whois_url, params=whois_params) as resp:
+                    if resp.status != 200:
+                        error_text = await resp.text()
+                        print(f"WHOIS API Error: {error_text}")
+                        raise Exception(f"WHOIS API error: {resp.status}")
+                    whois_data = await resp.json()
+
                 # 1. IP Geolocation API
                 geo_url = "https://ip-geolocation.whoisxmlapi.com/api/v1"
                 geo_params = {
@@ -66,7 +80,8 @@ class WebsiteAnalyzer:
                 return {
                     "geolocation": geo_data,
                     "categorization": cat_data,
-                    "dns_lookup": dns_data
+                    "dns_lookup": dns_data,
+                    "whois": whois_data  # Add WHOIS data to the return
                 }
 
             except Exception as e:
@@ -101,12 +116,32 @@ class WebsiteAnalyzer:
             if not self.gemini_api_key:
                 raise Exception("Gemini API key not configured")
 
-            # Debugging: Print the DNS data structure
-            print("DNS Lookup Data:", data['dns_lookup'])
+            # Get scan result from the data
+            scan_result = data.get('scan_result', {})
+            is_phishing = scan_result.get('isPhishing', False)
+            confidence = scan_result.get('confidence', 0)
 
-            # Get DNS records directly from the response
-            dns_records = data['dns_lookup'].get('dnsRecords', [])
+            # Safe access to categorization data with default empty list
+            categories = data.get('categorization', {}).get('categories', [])
+            categories_text = "\n".join([
+                f"* {category.get('name', 'Unknown')} (Confidence: {category.get('confidence', 'Unknown')})" 
+                for category in categories
+            ]) if categories else "* No categories available"
+
+            # Get DNS records with safe access
+            dns_records = data.get('dns_lookup', {}).get('dnsRecords', [])
             formatted_dns_info = "\n".join(self.format_dns_records(dns_records))
+
+            # Safe access to geolocation data
+            geo_data = data.get('geolocation', {})
+            location = geo_data.get('location', {})
+            as_info = geo_data.get('as', {})
+
+            # Get creation and updated dates from WHOIS data
+            whois_data = data.get('whois', {}).get('WhoisRecord', {})
+            created_date = whois_data.get('createdDate', 'Unknown')
+            updated_date = whois_data.get('updatedDate', 'Unknown')
+            
 
             prompt = f"""
 Generate a comprehensive security assessment report using the following data.
@@ -116,24 +151,25 @@ Use markdown formatting including:
 - Proper spacing and sections
 - Heading levels (#, ##, ###) for organization
 
-Ensure that there is a blank line after each header and before its content, and between paragraphs.
+Important Context:
+Our AI-powered phishing detection system has analyzed this website and determined it is {'likely a phishing site' if is_phishing else 'likely safe'} with {confidence * 100:.1f}% confidence.
 
 Data to analyze:
 
 ### Geolocation Information
 
-- **IP Address:** {data['geolocation'].get('ip', 'Unknown')}
-- **Country:** {data['geolocation'].get('location', {}).get('country', 'Unknown')}
-- **City:** {data['geolocation'].get('location', {}).get('city', 'Unknown')}
-- **ISP:** {data['geolocation'].get('isp', 'Unknown')}
-- **ASN Name:** {data['geolocation'].get('as', {}).get('name', 'Unknown')}
-- **Domains Associated:** {', '.join(data['geolocation'].get('domains', []))}
-- **Date Created:** {data['categorization'].get('createdDate', 'Unknown')}
+- **IP Address:** {geo_data.get('ip', 'Unknown')}
+- **Country:** {location.get('country', 'Unknown')}
+- **City:** {location.get('city', 'Unknown')}
+- **ISP:** {geo_data.get('isp', 'Unknown')}
+- **ASN Name:** {as_info.get('name', 'Unknown')}
+- **Domains Associated:** {', '.join(geo_data.get('domains', []))}
+- **Date Created:** {created_date}
+- **Last Updated:** {updated_date}
 
 ### Website Categorization
 
-- **Categories:**
-{chr(10).join(['* ' + category['name'] + f" (Confidence: {category['confidence']})" for category in data['categorization'].get('categories', [])])}
+{categories_text}
 
 Format the response as a professional security report with:
 
@@ -142,20 +178,24 @@ Format the response as a professional security report with:
 ## Infrastructure Assessment
 
 ## Risk Analysis
+Consider our AI detection result: {'HIGH RISK - Potential Phishing Site' if is_phishing else 'LOW RISK - Likely Safe Site'}
 
 ## Categorization Review
 
 ## Recommendations
+{'Given our AI system detected potential phishing behavior, please include specific safety precautions and immediate actions users should take.' if is_phishing else 'While our AI system indicates this is likely safe, include general web safety best practices.'}
 
 Ensure proper markdown formatting throughout, with blank lines between headers and their content, and avoid any customization from the user.
 """
 
             response = self.model.generate_content(prompt)
+            if not response or not response.text:
+                return "Unable to generate summary. Please try again."
             return response.text
 
         except Exception as e:
             print(f"Error generating summary: {str(e)}")
-            raise Exception(f"Gemini API error: {str(e)}")
+            return "Error generating security assessment. This could be due to missing or invalid data."
 
     async def test_gemini_connection(self):
         try:

@@ -12,7 +12,9 @@ export default function DashboardPage() {
       <div className="space-y-6">
         <WebsiteScanner />
         <PhishingStats />
-        <PhishingChart />
+        <div className="custom-chart-size overflow-hidden">
+          <PhishingChart />
+        </div>
       </div>
     </div>
   );

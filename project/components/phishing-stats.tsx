@@ -27,7 +27,25 @@ export function PhishingStats() {
   });
 
   useEffect(() => {
+    // Initial load
     setStats(getStatistics());
+
+    // Listen for storage updates from extension
+    const handleStorageUpdate = () => {
+      setStats(getStatistics());
+    };
+
+    window.addEventListener('phishguardStorageUpdate', handleStorageUpdate);
+
+    // Set up periodic refresh
+    const interval = setInterval(() => {
+      setStats(getStatistics());
+    }, 5000); // Refresh every 5 seconds
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('phishguardStorageUpdate', handleStorageUpdate);
+    };
   }, []);
 
   const statCards = [
