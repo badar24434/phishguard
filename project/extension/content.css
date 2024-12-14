@@ -1,0 +1,57 @@
+#phishguard-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999999;
+  background: rgba(255, 0, 0, 0.95);
+  padding: 16px;
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.warning-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.warning-content img {
+  width: 48px;
+  height: 48px;
+}
+
+.warning-text {
+  flex: 1;
+}
+
+.warning-text h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.warning-text p {
+  margin: 0;
+  font-size: 14px;
+}
+
+#phishguard-warning button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+#phishguard-proceed {
+  background: #ffffff33;
+  color: white;
+}
+
+#phishguard-leave {
+  background: white;
+  color: red;
+}
