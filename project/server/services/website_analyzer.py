@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 import google.generativeai as genai
 from sympy import Domain
+import pycountry  # Add this import at the top
 
 load_dotenv()
 
@@ -13,6 +14,34 @@ class WebsiteAnalyzer:
         self.gemini_api_key = os.getenv('GEMINI_API_KEY')
         genai.configure(api_key=self.gemini_api_key)
         self.model = genai.GenerativeModel('gemini-pro')
+
+    def normalize_country(self, country_str):
+        """Normalize country names and codes to a standard format"""
+        if not country_str or country_str == 'Unknown':
+            return 'Unknown'
+            
+        # Convert to uppercase for consistency
+        country_str = country_str.upper().strip()
+        
+        # If it's a 2-letter code
+        if len(country_str) == 2:
+            try:
+                return pycountry.countries.get(alpha_2=country_str).name.upper()
+            except:
+                pass
+                
+        # If it's a 3-letter code
+        if len(country_str) == 3:
+            try:
+                return pycountry.countries.get(alpha_3=country_str).name.upper()
+            except:
+                pass
+        
+        # Try to find by name
+        try:
+            return pycountry.countries.search_fuzzy(country_str)[0].name.upper()
+        except:
+            return country_str
 
     async def fetch_api_data(self, domain):
         async with aiohttp.ClientSession() as session:
@@ -136,13 +165,13 @@ class WebsiteAnalyzer:
             # Safe access to geolocation data
             geo_data = data.get('geolocation', {})
             location = geo_data.get('location', {})
-            geo_country = location.get('country', 'Unknown')
+            geo_country = self.normalize_country(location.get('country', 'Unknown'))
             
             whois_data = data.get('whois', {}).get('WhoisRecord', {})
             whois_registrant = whois_data.get('registrant', {})
-            whois_country = whois_registrant.get('country', 'Unknown')
+            whois_country = self.normalize_country(whois_registrant.get('country', 'Unknown'))
 
-            # Check for location mismatch
+            # Check for location mismatch with normalized countries
             location_mismatch = (geo_country != 'Unknown' and whois_country != 'Unknown' 
                                and geo_country != whois_country)
             
