@@ -2,6 +2,7 @@ import aiohttp
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
+from sympy import Domain
 
 load_dotenv()
 
@@ -152,7 +153,7 @@ Use markdown formatting including:
 - Heading levels (#, ##, ###) for organization
 
 Important Context:
-Our AI-powered phishing detection system has analyzed this website and determined it is {'likely a phishing site' if is_phishing else 'likely safe'} with {confidence * 100:.1f}% confidence.
+Our AI-powered phishing detection system has analyzed this website and determined it is {'likely a phishing site' if is_phishing else 'likely safe'}.
 
 Data to analyze:
 
@@ -160,7 +161,7 @@ Data to analyze:
 
 - **IP Address:** {geo_data.get('ip', 'Unknown')}
 - **Country:** {location.get('country', 'Unknown')}
-- **City:** {location.get('city', 'Unknown')}
+- **City:** {whois_data.get('registrant', {}).get('city', 'Unknown')}
 - **ISP:** {geo_data.get('isp', 'Unknown')}
 - **ASN Name:** {as_info.get('name', 'Unknown')}
 - **Domains Associated:** {', '.join(geo_data.get('domains', []))}
@@ -170,6 +171,10 @@ Data to analyze:
 ### Website Categorization
 
 {categories_text}
+
+### DNS Analysis
+
+{formatted_dns_info}
 
 Format the response as a professional security report with:
 

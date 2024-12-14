@@ -110,7 +110,7 @@ async def analyze_url(request: URLRequest):
         prediction = predictor.predict(request.url)
         
         # Add prediction results to api_data
-        api_data['model_result'] = prediction
+        api_data['scan_result'] = prediction  # Ensure key matches expected in generate_summary
         
         summary = await analyzer.generate_summary(api_data)
         

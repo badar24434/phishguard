@@ -114,11 +114,11 @@
 }
 
 .custom-markdown h1 {
-  @apply text-4xl; /* Customize font size here */
+  @apply text-3xl; /* Customize font size here */
 }
 
 .custom-markdown h2 {
-  @apply text-3xl; /* Customize font size here */
+  @apply text-2xl; /* Customize font size here */
 }
 
 .custom-markdown h3 {
