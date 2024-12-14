@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Loader2 } from 'lucide-react'; // Add Loader2 import
+import { ChevronLeft, Loader2, Copy } from 'lucide-react'; // Add Loader2 and Copy import
 import { useRouter, usePathname } from 'next/navigation'; // Import usePathname
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import { saveScanResult } from '@/lib/storage';
 import { ScanResult } from '@/lib/phishing-detection';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'; // Import the GFM plugin
+import { toast } from './ui/use-toast';
 
 export function WebsiteScanner() {
   const router = useRouter();
@@ -116,6 +117,22 @@ export function WebsiteScanner() {
     }
   };
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(summary);
+      toast({
+        title: "Copied",
+        description: "Summary copied to clipboard",
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Conditionally render back button if we're not on the dashboard
   const isNotDashboard = pathname !== '/dashboard'; // Use pathname here
 
@@ -197,7 +214,17 @@ export function WebsiteScanner() {
               
               {summary && (
                 <div className="w-full max-w-xl mt-4 p-4 bg-muted/50 rounded-lg">
-                  <div className="prose prose-sm dark:prose-invert custom-markdown"> {/* Add these classes */}
+                  <div className="flex justify-end mb-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleCopy}
+                      className="h-8 px-2"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="prose prose-sm dark:prose-invert custom-markdown">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
                   </div>
                 </div>
