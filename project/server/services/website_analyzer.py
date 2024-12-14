@@ -136,13 +136,24 @@ class WebsiteAnalyzer:
             # Safe access to geolocation data
             geo_data = data.get('geolocation', {})
             location = geo_data.get('location', {})
-            as_info = geo_data.get('as', {})
-
-            # Get creation and updated dates from WHOIS data
-            whois_data = data.get('whois', {}).get('WhoisRecord', {})
-            created_date = whois_data.get('createdDate', 'Unknown')
-            updated_date = whois_data.get('updatedDate', 'Unknown')
+            geo_country = location.get('country', 'Unknown')
             
+            whois_data = data.get('whois', {}).get('WhoisRecord', {})
+            whois_registrant = whois_data.get('registrant', {})
+            whois_country = whois_registrant.get('country', 'Unknown')
+
+            # Check for location mismatch
+            location_mismatch = (geo_country != 'Unknown' and whois_country != 'Unknown' 
+                               and geo_country != whois_country)
+            
+            vpn_warning = ""
+            if location_mismatch:
+                vpn_warning = f"""
+⚠️ **Location Mismatch Detected**
+* WHOIS Registration Country: {whois_country}
+* Current Server Location: {geo_country}
+* This mismatch suggests possible use of VPN or proxy services, which is a common tactic in phishing attacks
+"""
 
             prompt = f"""
 Generate a comprehensive security assessment report using the following data.
@@ -155,32 +166,34 @@ Use markdown formatting including:
 Important Context:
 Our AI-powered phishing detection system has analyzed this website and determined it is {'likely a phishing site' if is_phishing else 'likely safe'}.
 
+{vpn_warning if location_mismatch else ''}
+
 Data to analyze:
 
 ### Geolocation Information
 
 - **IP Address:** {geo_data.get('ip', 'Unknown')}
-- **Country:** {location.get('country', 'Unknown')}
-- **City:** {whois_data.get('registrant', {}).get('city', 'Unknown')}
+- **Current Server Location:**
+  * Country: {geo_country}
+  * City: {location.get('city', 'Unknown')}
+- **Registration Location:**
+  * Country: {whois_country}
 - **ISP:** {geo_data.get('isp', 'Unknown')}
-- **ASN Name:** {as_info.get('name', 'Unknown')}
+- **ASN Name:** {geo_data.get('as', {}).get('name', 'Unknown')}
 - **Domains Associated:** {', '.join(geo_data.get('domains', []))}
-- **Date Created:** {created_date}
-- **Last Updated:** {updated_date}
+- **Date Created:** {whois_data.get('createdDate', 'Unknown')}
+- **Last Updated:** {whois_data.get('updatedDate', 'Unknown')}
 
 ### Website Categorization
 
 {categories_text}
-
-### DNS Analysis
-
-{formatted_dns_info}
 
 Format the response as a professional security report with:
 
 # Security Assessment Report 
 
 ## Infrastructure Assessment
+If there's a location mismatch between WHOIS and GeoIP data, consider this a potential red flag as it may indicate the use of VPN/proxy services to mask the true location.
 
 ## Risk Analysis
 Consider our AI detection result: {'HIGH RISK - Potential Phishing Site' if is_phishing else 'LOW RISK - Likely Safe Site'}
@@ -188,7 +201,7 @@ Consider our AI detection result: {'HIGH RISK - Potential Phishing Site' if is_p
 ## Categorization Review
 
 ## Recommendations
-{'Given our AI system detected potential phishing behavior, please include specific safety precautions and immediate actions users should take.' if is_phishing else 'While our AI system indicates this is likely safe, include general web safety best practices.'}
+{'Given our AI system detected potential phishing behavior, please include specific safety precautions and immediate actions users should take.' + (' The detected location mismatch strongly suggests the use of VPN or proxy services, which is a common tactic in phishing attacks.' if location_mismatch else '') if is_phishing else 'While our AI system indicates this is likely safe, include general web safety best practices.'}
 
 Ensure proper markdown formatting throughout, with blank lines between headers and their content, and avoid any customization from the user.
 """
