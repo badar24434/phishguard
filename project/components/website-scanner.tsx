@@ -159,8 +159,7 @@ export function WebsiteScanner() {
                     </div>
                     <div className="text-sm text-muted-foreground">
                       Confidence: {Math.round(result.isPhishing ? 
-                        result.confidence * 100 : // For phishing sites
-                        (1 - result.confidence) * 100 // For safe sites
+                        result.confidence * 100 : 100
                       )}%
                     </div>
                     {result.error && (
@@ -198,7 +197,7 @@ export function WebsiteScanner() {
               
               {summary && (
                 <div className="w-full max-w-xl mt-4 p-4 bg-muted/50 rounded-lg">
-                  <div className="custom-markdown">
+                  <div className="prose prose-sm dark:prose-invert custom-markdown"> {/* Add these classes */}
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
                   </div>
                 </div>

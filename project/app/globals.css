@@ -107,20 +107,26 @@
   font-family: 'Your Desired Font', sans-serif;
 }
 
+.custom-markdown h1,
+.custom-markdown h2,
+.custom-markdown h3 {
+  @apply text-foreground font-bold mb-4;
+}
+
 .custom-markdown h1 {
-  @apply text-4xl font-bold text-primary mb-4;
+  @apply text-4xl; /* Customize font size here */
 }
 
 .custom-markdown h2 {
-  @apply text-3xl font-semibold text-secondary mb-3;
+  @apply text-3xl; /* Customize font size here */
 }
 
 .custom-markdown h3 {
-  @apply text-2xl font-semibold text-accent mb-2;
+  @apply text-2xl;
 }
 
 .custom-markdown p {
-  @apply text-base text-muted-foreground leading-relaxed mb-4;
+  @apply text-lg text-muted-foreground leading-relaxed mb-4; /* Customize font size here */
 }
 
 .custom-markdown ul {
@@ -128,7 +134,7 @@
 }
 
 .custom-markdown li {
-  @apply mb-2 pl-2;
+  @apply mb-2 pl-2 text-lg; /* Change font size for category items here */
 }
 
 .custom-markdown em {
@@ -136,7 +142,7 @@
 }
 
 .custom-markdown strong {
-  @apply font-bold text-primary;
+  @apply text-foreground font-bold;
 }
 
 /* Responsive Spacing Adjustments */
