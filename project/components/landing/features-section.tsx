@@ -15,6 +15,11 @@ const features = [
     title: 'Easy to Use',
     description: 'Simple interface that makes it easy to stay protected while browsing the web.',
   },
+  {
+    title: 'AI-Generated Summary',
+    description: 'Automatically provides concise summaries of potential threats for quick understanding and informed decision-making.',
+  },
+  
 ];
 
 export function FeaturesSection() {
@@ -26,6 +31,7 @@ export function FeaturesSection() {
           title={feature.title}
           description={feature.description}
           delay={0.2 + index * 0.1}
+          className={feature.title === 'AI-Generated Summary' ? 'md:col-span-3' : ''} 
         />
       ))}
     </div>
