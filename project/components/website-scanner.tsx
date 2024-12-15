@@ -251,7 +251,7 @@ export function WebsiteScanner() {
                       onClick={() => setShowRecommendations(true)}
                       className="w-full mt-4 bg-green-600 hover:bg-green-700"
                     >
-                      Tools Recommendations from AI
+                      Tools Recommendations Based on The Analysis
                     </Button>
                   )}
                 </div>
