@@ -1,0 +1,160 @@
+{
+  "categories": {
+    "passwordManagers": [
+      {
+        "name": "Bitwarden",
+        "price": "Free for basic features; Premium version at $10/year",
+        "features": [
+          "Unlimited password storage across devices (free tier)",
+          "End-to-end encryption for data security",
+          "Secure password generator",
+          "Biometric login and TOTP generation (Premium)"
+        ],
+        "validityPeriod": "Subscription-based, billed annually",
+        "topFeedback": [
+          "Bitwarden offers great value for its price and is highly secure.",
+          "Cross-platform functionality is seamless."
+        ],
+        "customerSupport": "Email and ticketing support for Free; priority support for Premium users",
+        "website": "https://bitwarden.com"
+      },
+      {
+        "name": "LastPass",
+        "price": "Free with limited features; Premium at $36/year",
+        "features": [
+          "One-to-one sharing (free), unlimited sharing (Premium)",
+          "Autofill for passwords and personal information",
+          "Dark web monitoring (Premium)",
+          "Multi-device sync"
+        ],
+        "validityPeriod": "Monthly or annual subscription",
+        "topFeedback": [
+          "LastPass is user-friendly and makes managing passwords effortless.",
+          "Its dark web monitoring is a great addition for added security."
+        ],
+        "customerSupport": "Priority support for Premium; community support for Free users",
+        "website": "https://lastpass.com"
+      },
+      {
+        "name": "Dashlane",
+        "price": "Free for limited use; Premium at $39.99/year",
+        "features": [
+          "Unlimited password storage",
+          "VPN for secure browsing (Premium)",
+          "Password health reports",
+          "Dark web monitoring"
+        ],
+        "validityPeriod": "Monthly or annual subscription",
+        "topFeedback": [
+          "Dashlane combines a password manager with a VPN, which is a great combo.",
+          "The password health report is incredibly useful."
+        ],
+        "customerSupport": "24/7 chat and email support for Premium users",
+        "website": "https://dashlane.com"
+      }
+    ],
+    "secureBrowsingTools": [
+      {
+        "name": "NordVPN",
+        "price": "Plans start at $3.49/month (2-year plan)",
+        "features": [
+          "Military-grade encryption",
+          "Threat protection (blocks ads, trackers, and malware)",
+          "5,500+ servers in 60 countries",
+          "Double VPN and Onion over VPN for maximum privacy"
+        ],
+        "validityPeriod": "Monthly, 1-year, or 2-year plans",
+        "topFeedback": [
+          "NordVPN offers the best balance of speed and security.",
+          "The threat protection feature enhances overall browsing safety."
+        ],
+        "customerSupport": "24/7 live chat and email support",
+        "website": "https://nordvpn.com"
+      },
+      {
+        "name": "ExpressVPN",
+        "price": "Starts at $6.67/month (12-month plan)",
+        "features": [
+          "AES-256 encryption",
+          "No-logs policy for enhanced privacy",
+          "Over 3,000 servers in 94 countries",
+          "Split tunneling and kill switch"
+        ],
+        "validityPeriod": "Monthly, 6-month, or 12-month plans",
+        "topFeedback": [
+          "ExpressVPN has consistently high speeds and excellent global coverage.",
+          "It’s easy to use, even for non-technical users."
+        ],
+        "customerSupport": "24/7 live chat, email support, and troubleshooting guides",
+        "website": "https://expressvpn.com"
+      },
+      {
+        "name": "ProtonVPN",
+        "price": "Free tier available; Paid plans start at $4.99/month",
+        "features": [
+          "No-logs policy",
+          "Secure Core servers for added protection",
+          "Unlimited bandwidth (paid plans)",
+          "Access to Tor over VPN"
+        ],
+        "validityPeriod": "Monthly or annual plans",
+        "topFeedback": [
+          "ProtonVPN is great for privacy-focused users, especially with its no-logs policy.",
+          "The free plan is excellent for basic browsing."
+        ],
+        "customerSupport": "Email support for all users; priority support for paid plans",
+        "website": "https://protonvpn.com"
+      }
+    ],
+    "mfaApps": [
+      {
+        "name": "Google Authenticator",
+        "price": "Free",
+        "features": [
+          "Generates TOTP (Time-based One-Time Passwords)",
+          "QR code-based account setup",
+          "Works offline"
+        ],
+        "validityPeriod": "Free and unlimited use",
+        "topFeedback": [
+          "Simple, reliable, and highly secure for 2FA.",
+          "It’s great for anyone looking for a no-frills authenticator app."
+        ],
+        "customerSupport": "Limited (Google support forums and help articles)",
+        "website": "https://support.google.com/accounts/answer/1066447"
+      },
+      {
+        "name": "Authy",
+        "price": "Free",
+        "features": [
+          "Cloud backup for 2FA codes",
+          "Multi-device sync",
+          "PIN protection for added security"
+        ],
+        "validityPeriod": "Free and unlimited use",
+        "topFeedback": [
+          "Authy is perfect for managing 2FA codes across multiple devices.",
+          "The cloud backup feature is a lifesaver for device changes."
+        ],
+        "customerSupport": "Email and online support",
+        "website": "https://authy.com"
+      },
+      {
+        "name": "Microsoft Authenticator",
+        "price": "Free",
+        "features": [
+          "TOTP generation",
+          "Passwordless login with Microsoft accounts",
+          "App lock with biometrics or PIN"
+        ],
+        "validityPeriod": "Free and unlimited use",
+        "topFeedback": [
+          "Best for users with Microsoft accounts; integrates seamlessly.",
+          "It’s fast, secure, and intuitive."
+        ],
+        "customerSupport": "Online help articles and forums",
+        "website": "https://www.microsoft.com/en-us/security/mobile-authenticator-app"
+      }
+    ]
+  }
+}

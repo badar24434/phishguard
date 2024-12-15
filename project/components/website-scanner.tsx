@@ -7,11 +7,12 @@ import { useRouter, usePathname } from 'next/navigation'; // Import usePathname
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Shield, AlertTriangle, CheckCircle } from 'lucide-react';
-import { saveScanResult } from '@/lib/storage';
+import { saveScanResult, saveItem, updateSavedItem } from '@/lib/storage';
 import { ScanResult } from '@/lib/phishing-detection';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'; // Import the GFM plugin
 import { toast } from './ui/use-toast';
+import { RecommendationsModal } from './recommendations-modal';
 
 export function WebsiteScanner() {
   const router = useRouter();
@@ -22,6 +23,8 @@ export function WebsiteScanner() {
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   const [summary, setSummary] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [savedItemId, setSavedItemId] = useState<string | null>(null);
 
   // Store URL in localStorage on change
   useEffect(() => {
@@ -63,6 +66,18 @@ export function WebsiteScanner() {
 
       setResult(scanResult);
       saveScanResult(scanResult);
+
+      const savedItem = saveItem({
+        url,
+        scanResult: {
+          isPhishing: scanResult.isPhishing,
+          confidence: scanResult.confidence
+        }
+      });
+      
+      // Store the ID for later updates
+      setSavedItemId(savedItem.id);
+
     } catch (error) {
       console.error('Error scanning URL:', error);
       setResult({
@@ -107,6 +122,10 @@ export function WebsiteScanner() {
 
       // Format and display the summary
       setSummary(data.summary);
+
+      if (savedItemId) {
+        updateSavedItem(savedItemId, { analysis: data.summary });
+      }
 
     } catch (error) {
       console.error('Error generating summary:', error);
@@ -227,12 +246,27 @@ export function WebsiteScanner() {
                   <div className="prose prose-sm dark:prose-invert custom-markdown">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
                   </div>
+                  {result.isPhishing && (
+                    <Button
+                      onClick={() => setShowRecommendations(true)}
+                      className="w-full mt-4 bg-green-600 hover:bg-green-700"
+                    >
+                      Tools Recommendations from AI
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
           </CardContent>
         </Card>
       )}
+
+      <RecommendationsModal 
+        isOpen={showRecommendations}
+        onClose={() => setShowRecommendations(false)}
+        savedItemId={savedItemId || ''}
+        url={url} // Add this prop
+      />
     </div>
   );
 }

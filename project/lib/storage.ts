@@ -1,6 +1,8 @@
 import { ScanResult } from './phishing-detection';
+import { SavedItem } from '@/types/saved-item';
 
 const STORAGE_KEY = 'phishing_scan_results';
+const SAVED_ITEMS_KEY = 'phishguard_saved_items';
 
 export function getScanHistory(): ScanResult[] {
   if (typeof window === 'undefined') return [];
@@ -68,4 +70,39 @@ export function getChartData(range: TimeRange = '7days') {
     date,
     attempts: dailyPhishing[date] || 0
   }));
+}
+
+export function getSavedItems(): SavedItem[] {
+  if (typeof window === 'undefined') return [];
+  const saved = localStorage.getItem(SAVED_ITEMS_KEY);
+  return saved ? JSON.parse(saved) : [];
+}
+
+export function saveItem(item: Partial<SavedItem>) {
+  const items = getSavedItems();
+  const newItem: SavedItem = {
+    id: crypto.randomUUID(),
+    timestamp: new Date().toISOString(),
+    url: item.url || '',
+    scanResult: item.scanResult,
+    analysis: item.analysis,
+    selectedTools: item.selectedTools,
+  };
+  
+  items.unshift(newItem); // Add new item at the beginning
+  localStorage.setItem(SAVED_ITEMS_KEY, JSON.stringify(items));
+  return newItem;
+}
+
+export function updateSavedItem(id: string, updates: Partial<SavedItem>) {
+  const items = getSavedItems();
+  const index = items.findIndex(item => item.id === id);
+  if (index !== -1) {
+    items[index] = { ...items[index], ...updates };
+    localStorage.setItem(SAVED_ITEMS_KEY, JSON.stringify(items));
+    // Dispatch custom event for real-time updates
+    window.dispatchEvent(new CustomEvent('storage', {
+      detail: { type: 'savedItems', data: items }
+    }));
+  }
 }

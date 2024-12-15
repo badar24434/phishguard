@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Shield, BarChart3, Settings, AlertCircle, Sun, Moon, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { Shield, BarChart3, Settings, AlertCircle, Sun, Moon, ChevronLeft, ChevronRight, LogOut, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -24,6 +24,11 @@ const sidebarItems = [
     title: 'Alerts',
     href: '/alerts',
     icon: AlertCircle,
+  },
+  {
+    title: 'Saved',
+    href: '/saved',
+    icon: Bookmark,
   },
   {
     title: 'Settings',
