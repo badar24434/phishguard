@@ -5,14 +5,21 @@ import { Shield, AlertTriangle, ShieldAlert, Activity } from 'lucide-react';
 import { getStatistics } from '@/lib/storage';
 import { useEffect, useState } from 'react';
 
-const StatCard = ({ title, value, icon: Icon, description }: any) => (
+const StatCard = ({ title, value, icon: Icon, description, valueClassName, percentage }: any) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between pb-2">
       <CardTitle className="text-sm font-medium">{title}</CardTitle>
       <Icon className="h-4 w-4 text-muted-foreground" />
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
+      <div className="flex items-baseline gap-2">
+        <div className={`text-2xl font-bold ${valueClassName || ''}`}>{value}</div>
+        {percentage !== undefined && (
+          <div className="text-xs font-medium text-muted-foreground animate-fade-in">
+            ({percentage}%)
+          </div>
+        )}
+      </div>
       <p className="text-xs text-muted-foreground">{description}</p>
     </CardContent>
   </Card>
@@ -25,6 +32,12 @@ export function PhishingStats() {
     safeWebsites: 0,
     recentScans: 0,
   });
+
+  // Calculate percentages
+  const calculatePercentage = (value: number) => {
+    if (stats.totalScans === 0) return 0;
+    return ((value / stats.totalScans) * 100).toFixed(1);
+  };
 
   useEffect(() => {
     // Initial load
@@ -60,18 +73,23 @@ export function PhishingStats() {
       value: stats.phishingDetected,
       icon: ShieldAlert,
       description: 'Last 30 days',
+      valueClassName: 'text-red-500 dark:text-red-400',
+      percentage: calculatePercentage(stats.phishingDetected)
     },
     {
       title: 'Safe Websites',
       value: stats.safeWebsites,
       icon: Shield,
       description: 'Last 30 days',
+      valueClassName: 'text-green-500 dark:text-green-400',
+      percentage: calculatePercentage(stats.safeWebsites)
     },
     {
       title: 'Recent Scans',
       value: stats.recentScans,
       icon: AlertTriangle,
       description: 'Last 30 days',
+      valueClassName: 'text-blue-500 dark:text-blue-400'
     },
   ];
 
