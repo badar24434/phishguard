@@ -44,15 +44,18 @@ export function getStatistics() {
   };
 }
 
-export function getChartData() {
+export type TimeRange = '7days' | '30days' | '90days';
+
+export function getChartData(range: TimeRange = '7days') {
   const history = getScanHistory();
-  const last7Days = new Array(7).fill(0).map((_, i) => {
+  const days = range === '7days' ? 7 : range === '30days' ? 30 : 90;
+  
+  const daysArray = new Array(days).fill(0).map((_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - i);
     return date.toISOString().split('T')[0];
   }).reverse();
 
-  // Create a map of dates and their phishing attempts
   const dailyPhishing = history.reduce((acc: { [key: string]: number }, scan) => {
     const date = new Date(scan.timestamp).toISOString().split('T')[0];
     if (scan.isPhishing) {
@@ -61,8 +64,7 @@ export function getChartData() {
     return acc;
   }, {});
 
-  // Format data for the chart
-  return last7Days.map(date => ({
+  return daysArray.map(date => ({
     date,
     attempts: dailyPhishing[date] || 0
   }));
