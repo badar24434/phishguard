@@ -246,7 +246,7 @@ export function WebsiteScanner() {
                   <div className="prose prose-sm dark:prose-invert custom-markdown">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown>
                   </div>
-                  {result.isPhishing && (
+                  {result.isPhishing && ( // Only show recommendations button for phishing sites
                     <Button
                       onClick={() => setShowRecommendations(true)}
                       className="w-full mt-4 bg-green-600 hover:bg-green-700"
