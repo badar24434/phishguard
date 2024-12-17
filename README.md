@@ -80,7 +80,7 @@ This project is licensed under the **MIT License**.
 ---
 
 ## **Links**  
-- **Live Demo**: [https://phishguard.live](https://phishguard.live)  
+- **Slide Presentation**: [https://phishguard.live](https://phishguard.live)  
 - **Video Demo**: [Watch the Demo](https://loom.com/share/your-demo-link)
 
 ---
