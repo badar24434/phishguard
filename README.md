@@ -87,8 +87,8 @@ This project is licensed under the **MIT License**.
 ---
 
 ## **Links**  
-- **Slide Presentation**: https://www.canva.com/design/DAGY9RAEHEk/Crmz1CDdK95y-lWI1Tla6A/view?utm_content=DAGY9RAEHEk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hfdd8620605 
-- **Video Demo**: 
+- **Slide Presentation**: [Presentation Deck](https://www.canva.com/design/DAGY9RAEHEk/Crmz1CDdK95y-lWI1Tla6A/view?utm_content=DAGY9RAEHEk&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hfdd8620605)
+- **Video Demo**: [Video Demo](https://youtu.be/gVTS2i4fOH8?si=j99J7G3HdJlJgSY6)
 
 ---
 
