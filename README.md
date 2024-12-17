@@ -48,11 +48,18 @@ pip install -r requirements.txt
 python -m uvicorn api:app --host 127.0.0.1 --port 8001
 ```
 
+Make sure to get the API key from [WhoisXML](https://whoisxmlapi.com) and paste it in the `project/server/.env` file as follows:  
+
 **Frontend**  
 ```bash
 cd project
 npm install
 npm run dev
+```
+
+Also, update the `project/extension/lib/api.js` file with the API key:  
+```javascript
+const WHOIS_API_KEY = 'your_api_key_here';
 ```
 
 ### **Load the Extension**  
