@@ -1,4 +1,4 @@
-export const WHOIS_API_KEY = 'at_aqRluxBFOXKkp1j4AbFbNEh17pghw';
+export const WHOIS_API_KEY = '';
 export const IPQUALITYSCORE_API_KEY = 'your_ipqualityscore_key';
 
 export async function getWhoisData(domain) {
