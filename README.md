@@ -64,8 +64,8 @@ npm run dev
 ---
 
 ## **Usage**  
-1. For extension: Install the extension and open the popup from the browser toolbar.  
-2. For Dashboard: Enter a website URL to scan for phishing risks.  
+1. **For extension:** Install the extension and open the popup from the browser toolbar.  
+2. **For Dashboard:** Enter a website URL to scan for phishing risks.  
    If a threat is detected:  
    - View a comprehensive AI security report.  
    - Receive recommendations for tools like password managers, VPNs, and MFA apps to strengthen your security.  
@@ -81,7 +81,6 @@ This project is licensed under the **MIT License**.
 
 ## **Links**  
 - **Live Demo**: [https://phishguard.live](https://phishguard.live)  
-- **GitHub Repository**: [https://github.com/yourusername/phishguard](https://github.com/yourusername/phishguard)  
 - **Video Demo**: [Watch the Demo](https://loom.com/share/your-demo-link)
 
 ---
