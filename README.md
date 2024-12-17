@@ -3,7 +3,7 @@
 # **PhishGuard**  
 ### **AI-Powered Phishing Detection and Security Recommendations**
 
-PhishGuard is a comprehensive browser extension designed to detect phishing websites in real-time, provide actionable insights, and recommend security tools like password managers, secure browsing tools, and MFA apps to enhance online safety.
+PhishGuard is a comprehensive browser extension designed to detect phishing websites in real-time, provide actionable insights, and recommend security tools like password managers, secure browsing tools,MFA apps and many more to enhance online safety.
 
 ---
 
