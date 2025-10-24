@@ -12,7 +12,6 @@ PhishGuard is an AI-driven phishing detection project that provides a browser ex
 - [Folder structure](#folder-structure)
 - [API Endpoints](#api-endpoints)
 - [Model & Data](#model--data)
-- [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements--credits)
 - [Contact](#contact)
@@ -179,17 +178,6 @@ Notes about model inputs/outputs
 - The Node server expects a string tensor input and reads output named `probabilities` (index 1 = phishing probability).
 - The Python predictor also expects a string array and returns `isPhishing` and `confidence` (phishing probability).
 
-## Contributing
-- Contributions are welcome. Suggested workflow:
-  1. Fork the repo.
-  2. Create a branch: `git checkout -b feature/your-feature`.
-  3. Make changes, add tests where applicable.
-  4. Open a pull request with a clear description of the change.
-
-Guidelines
-- Keep frontend and extension changes isolated per conventional folders.
-- When modifying model behavior, include unit tests or a short script to validate inference.
-- If adding external services (WHOIS, enrichers), avoid committing secrets; use environment variables.
 
 ## License
 - No LICENSE file was detected in the repository. Add a LICENSE (for example MIT or Apache-2.0) to clarify usage. 
@@ -200,10 +188,9 @@ Guidelines
 
 ## Contact
 - Repository: https://github.com/badar24434/phishguard
-- Author / Maintainer: [Add author name here]
-- Email: [Add email here]
-- For issues or contribution discussions, please use GitHub Issues & Pull Requests.
-
+- Author: **Muhamad Badar Miqdad bin Md Nasir**
+- Email: **badarmiqdad45@gmail.com**
+- Website / Social: [LinkedIn]([https://www.linkedin.com/in/badar-miqdad](https://www.linkedin.com/in/muhamad-badar-miqdad-bin-md-nasir-9404282b8/)) | [GitHub](https://github.com/badar24434)
 ---
 
 If you want, I can also:
